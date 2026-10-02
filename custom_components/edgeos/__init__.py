@@ -3,11 +3,15 @@ This component provides support for EdgeOS based devices.
 For more details about this component, please refer to the documentation at
 https://github.com/elad-bar/ha-EdgeOS
 """
+import hashlib
 import logging
+from pathlib import Path
 import sys
 
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import EVENT_HOMEASSISTANT_START
+from homeassistant.components.frontend import add_extra_js_url
+from homeassistant.components.http import StaticPathConfig
 from homeassistant.core import HomeAssistant
 
 from .common.consts import DEFAULT_NAME, DOMAIN
@@ -20,7 +24,22 @@ from .models.exceptions import LoginError
 _LOGGER = logging.getLogger(__name__)
 
 
-async def async_setup(_hass, _config):
+CARD_URL = f"/{DOMAIN}/edgerouter-card.js"
+CARD_PATH = Path(__file__).parent / "frontend" / "edgerouter-card.js"
+
+
+async def async_setup(hass, _config):
+    """Serve the bundled Lovelace card (custom:edgerouter-card) and load it on every dashboard."""
+    if hass.http is not None:
+        # The file is served with long cache headers, so the URL carries a content hash.
+        digest = await hass.async_add_executor_job(
+            lambda: hashlib.sha1(CARD_PATH.read_bytes()).hexdigest()[:10]
+        )
+        await hass.http.async_register_static_paths(
+            [StaticPathConfig(CARD_URL, str(CARD_PATH), True)]
+        )
+        add_extra_js_url(hass, f"{CARD_URL}?v={digest}")
+
     return True
 
 

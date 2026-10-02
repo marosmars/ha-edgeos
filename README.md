@@ -146,3 +146,14 @@ In case the following error appear:
 Before opening an issue, please try to remove integration from `Settings -> Devices & services`,
 
 Restart HA and try to add again, if still happen, open an issue and provide log with debug level as described above.
+
+## marosmars fork
+
+Changes on top of upstream v2.1.9:
+
+- EdgeOS 3.x login and interface discovery fixes (imported from a long-running local install).
+- VLAN subinterfaces (`ethX.V`, `switchX.V`) are supported: description and address come from the router config,
+  rates/traffic from the stats stream. Entities are named like the parent, e.g. `sensor.<router>_interface_eth1_40_received_rate`.
+- Bundled Lovelace card `custom:edgerouter-card` (header with CPU/RAM/WAN, front panel with ports, tunnel and VLAN chips,
+  unknown devices, enable/disable/restart actions). It is served by the integration and loaded on every dashboard, no resource needed.
+  Options: `prefix`, `wan` (eth0), `sfp` ([eth3]), `protect` ([eth0, eth1]), `accent`.

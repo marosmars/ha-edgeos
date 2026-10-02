@@ -110,6 +110,22 @@ class InterfaceProcessor(BaseProcessor):
                             self._extract_interface(
                                 interface_name, interface_data, int_type
                             )
+
+                            # VLAN subinterfaces (vif) of ethernet/switch interfaces, e.g. eth1.40.
+                            # Their traffic arrives in the stats stream under the same name.
+                            vifs = (
+                                interface_data.get("vif")
+                                if isinstance(interface_data, dict)
+                                else None
+                            )
+
+                            if isinstance(vifs, dict):
+                                for vif_id, vif_data in vifs.items():
+                                    self._extract_interface(
+                                        f"{interface_name}.{vif_id}",
+                                        vif_data if isinstance(vif_data, dict) else {},
+                                        int_type,
+                                    )
                         else:
                             _LOGGER.info(
                                 f"Skip loading interface {interface_name}, Type: {interface_type} is not supported"
