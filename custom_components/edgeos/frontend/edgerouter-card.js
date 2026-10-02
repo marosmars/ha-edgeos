@@ -397,7 +397,7 @@ class EdgeRouterCard extends HTMLElement {
         .cell.sel, .chip.sel { border-color: var(--primary-color); background: var(--fp-sel); }
         .nm { height: 16px; min-width: 0; }
         .nm span { display: block; font-size: 12.5px; line-height: 16px; font-weight: 600; color: var(--fp-name); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .rates { display: flex; justify-content: space-between; gap: 8px; height: 16px; font-size: 12px; font-variant-numeric: tabular-nums; white-space: nowrap; }
+        .rates { display: flex; justify-content: space-between; gap: 8px; height: 17px; font-size: 13px; font-variant-numeric: tabular-nums; white-space: nowrap; }
         .rates .zero { opacity: .45; }
         .jackrow { display: flex; align-items: center; gap: 5px; }
         .no { font-size: 11.5px; font-weight: 700; color: var(--fp-dim); font-variant-numeric: tabular-nums; }
@@ -424,7 +424,7 @@ class EdgeRouterCard extends HTMLElement {
         .chip.up .ti { color: var(--fp-up); }
         .tn { flex: 1; min-width: 0; font-weight: 600; color: var(--fp-name); overflow: hidden; text-overflow: ellipsis; }
         .chip:not(.act-on) .tn { font-weight: 500; }
-        .chip .rates { flex: none; width: 92px; height: auto; gap: 4px; font-size: 11.5px; }
+        .chip .rates { flex: none; width: 100px; height: auto; gap: 4px; font-size: 12.5px; }
         .vid { margin-right: 4px; padding: 0 4px; border-radius: 4px; background: var(--fp-sep); font-size: 10.5px; font-weight: 700; }
 
         .side { position: relative; flex: 0 0 280px; border-radius: 10px; background: var(--fp-panel); box-shadow: inset 0 1px 3px rgba(0,0,0,.15); }
