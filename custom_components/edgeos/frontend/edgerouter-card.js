@@ -498,6 +498,12 @@ class EdgeRouterCard extends HTMLElement {
           .main { flex-direction: column; align-items: stretch; }
           .chips { padding: 8px 0 0; border-left: none; border-top: 1px solid var(--fp-sep); }
         }
+        /* phones: title on its own line, stat tiles below it */
+        @media (max-width: 600px) {
+          .top { flex-wrap: wrap !important; }
+          .stats { width: 100%; overflow-x: auto; flex-wrap: nowrap; }
+          .stat { flex: 1 0 auto; min-width: 54px; }
+        }
       </style>
       <ha-card class="${this._hass.themes?.darkMode ? 'dark' : ''}" style="${this._config.accent ? `--card-accent:${this._config.accent}` : ''}">
         ${this._header(ifaces)}
