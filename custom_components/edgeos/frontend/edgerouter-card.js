@@ -388,7 +388,7 @@ class EdgeRouterCard extends HTMLElement {
         .dn-r { color: var(--fp-down); } .up-r { color: var(--fp-upl); }
         .chassis-wrap { flex: 1; display: flex; flex-direction: column; container-type: inline-size; margin-top: 10px; overflow-x: auto; border-radius: 12px; background: var(--fp-bg); box-shadow: var(--fp-edge); }
         .chassis { flex: 1; display: flex; align-items: stretch; gap: 14px; padding: 6px 10px; min-height: 112px; box-sizing: border-box; color: var(--fp-text); }
-        .main { display: flex; align-items: center; gap: 14px; margin: 0 auto; min-width: 0; }
+        .main { flex: 1; display: flex; align-items: center; gap: 14px; min-width: 0; }
         .ports { display: flex; gap: 8px; align-items: flex-end; }
         .cell { display: flex; flex-direction: column; gap: 2px; width: 110px; padding: 5px 6px; border-radius: 8px; cursor: pointer;
                 border: 1px solid transparent; box-sizing: border-box; transition: background .15s, border-color .15s; }
@@ -415,8 +415,9 @@ class EdgeRouterCard extends HTMLElement {
         .up .l1, .chip.up .led { background: #5f5; box-shadow: 0 0 6px #5f5; }
         .dis .l1, .chip.dis .led { background: #f44; box-shadow: 0 0 6px #f44; }
         .addr { height: 15px; margin-top: 4px; font-size: 11px; color: var(--fp-text); font-variant-numeric: tabular-nums; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .chips { display: flex; flex-direction: column; align-items: flex-start; gap: 4px; padding-left: 14px; border-left: 1px solid var(--fp-sep); }
-        .chip { display: flex; align-items: center; gap: 5px; width: 230px; height: 24px; padding: 0 8px; border-radius: 13px; cursor: pointer;
+        .chips { display: grid; grid-template-columns: 1fr 1fr; gap: 0 6px; align-items: start; padding-left: 14px; border-left: 1px solid var(--fp-sep); flex: 1; min-width: 360px; }
+        .ccol { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+        .chip { display: flex; align-items: center; gap: 5px; width: 100%; height: 24px; padding: 0 8px; border-radius: 13px; cursor: pointer;
                 border: 1px solid transparent; box-sizing: border-box; background: rgba(127,127,127,.1); font-size: 12px; white-space: nowrap; }
         .chip.down:not(.sel), .chip.dis:not(.sel) { opacity: .6; }
         .chip .led { width: 6px; height: 6px; border-radius: 50%; }
@@ -427,7 +428,7 @@ class EdgeRouterCard extends HTMLElement {
         .chip .rates { flex: none; width: 100px; height: auto; gap: 4px; font-size: 12.5px; }
         .vid { margin-right: 4px; padding: 0 4px; border-radius: 4px; background: var(--fp-sep); font-size: 10.5px; font-weight: 700; }
 
-        .side { position: relative; flex: 0 0 280px; border-radius: 10px; background: var(--fp-panel); box-shadow: inset 0 1px 3px rgba(0,0,0,.15); }
+        .side { position: relative; flex: 0 0 200px; border-radius: 10px; background: var(--fp-panel); box-shadow: inset 0 1px 3px rgba(0,0,0,.15); }
         .sidein { position: absolute; inset: 0; box-sizing: border-box; padding: 7px 12px; overflow: hidden; display: flex; flex-direction: column; gap: 3px; }
         .unk { display: flex; flex-wrap: wrap; align-items: center; gap: 4px; align-content: flex-start; }
         .ul { display: inline-flex; align-items: center; gap: 3px; height: 20px; padding: 0 7px 0 4px; border-radius: 10px;
@@ -468,12 +469,11 @@ class EdgeRouterCard extends HTMLElement {
         .act:disabled { opacity: .4; cursor: not-allowed; }
         .spin { animation: spin 1s linear infinite; }
         @keyframes spin { to { transform: rotate(360deg); } }
-        @container (max-width: 880px) {
+        @container (max-width: 1150px) {
           .chassis { flex-direction: column; }
           .main { flex-direction: column; align-items: stretch; margin: 0; }
           .ports { justify-content: space-between; }
-          .chips { flex-direction: row; flex-wrap: wrap; padding: 8px 0 0; border-left: none; border-top: 1px solid var(--fp-sep); }
-          .chip { width: calc(50% - 3px); }
+          .chips { padding: 8px 0 0; border-left: none; border-top: 1px solid var(--fp-sep); min-width: 0; }
           .side { flex: 0 0 auto; }
           .sidein { position: static; padding: 5px 10px 6px; gap: 2px; }
           .devs { display: grid; grid-template-columns: 1fr 1fr; gap: 0 18px; overflow: visible; }
@@ -490,7 +490,10 @@ class EdgeRouterCard extends HTMLElement {
         <div class="chassis-wrap"><div class="chassis">
           <div class="main">
             <div class="ports">${phys.map((x) => this._port(x)).join('')}</div>
-            ${chips.length ? `<div class="chips">${chips.map((x) => this._chip(x)).join('')}</div>` : ''}
+            ${chips.length ? `<div class="chips">
+              <div class="ccol">${chips.filter((x) => x.up && x.enabled).map((x) => this._chip(x)).join('')}</div>
+              <div class="ccol">${chips.filter((x) => !(x.up && x.enabled)).map((x) => this._chip(x)).join('')}</div>
+            </div>` : ''}
           </div>
           <div class="side"><div class="sidein">${this._panel(ifaces.find((x) => x.name === this._sel))}</div></div>
         </div></div>
