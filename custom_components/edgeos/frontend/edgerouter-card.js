@@ -390,9 +390,9 @@ class EdgeRouterCard extends HTMLElement {
         .chassis { flex: 1; display: flex; align-items: stretch; gap: 14px; padding: 6px 10px; min-height: 112px; box-sizing: border-box; color: var(--fp-text); }
         .main { flex: 1; display: flex; align-items: center; gap: 14px; min-width: 0; }
         .ports { display: flex; gap: 8px; align-items: flex-end; }
-        .cell { display: flex; flex-direction: column; gap: 2px; width: 110px; padding: 5px 6px; border-radius: 8px; cursor: pointer;
+        .cell { display: flex; flex-direction: column; gap: 2px; width: 104px; padding: 5px 6px; border-radius: 8px; cursor: pointer;
                 border: 1px solid transparent; box-sizing: border-box; transition: background .15s, border-color .15s; }
-        .cell.sfp { width: 90px; }
+        .cell.sfp { width: 80px; }
         .cell:hover, .chip:hover { background: var(--fp-hover); }
         .cell.sel, .chip.sel { border-color: var(--primary-color); background: var(--fp-sel); }
         .nm { height: 16px; min-width: 0; }
@@ -415,7 +415,7 @@ class EdgeRouterCard extends HTMLElement {
         .up .l1, .chip.up .led { background: #5f5; box-shadow: 0 0 6px #5f5; }
         .dis .l1, .chip.dis .led { background: #f44; box-shadow: 0 0 6px #f44; }
         .addr { height: 15px; margin-top: 4px; font-size: 11px; color: var(--fp-text); font-variant-numeric: tabular-nums; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .chips { display: grid; grid-template-columns: 1fr 1fr; gap: 0 6px; align-items: start; padding-left: 14px; border-left: 1px solid var(--fp-sep); flex: 1; min-width: 360px; }
+        .chips { display: grid; grid-template-columns: minmax(0, 1fr) 130px; gap: 0 6px; align-items: start; padding-left: 14px; border-left: 1px solid var(--fp-sep); flex: 1; min-width: 320px; }
         .ccol { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
         .chip { display: flex; align-items: center; gap: 5px; width: 100%; height: 24px; padding: 0 8px; border-radius: 13px; cursor: pointer;
                 border: 1px solid transparent; box-sizing: border-box; background: rgba(127,127,127,.1); font-size: 12px; white-space: nowrap; }
@@ -425,7 +425,7 @@ class EdgeRouterCard extends HTMLElement {
         .chip.up .ti { color: var(--fp-up); }
         .tn { flex: 1; min-width: 0; font-weight: 600; color: var(--fp-name); overflow: hidden; text-overflow: ellipsis; }
         .chip:not(.act-on) .tn { font-weight: 500; }
-        .chip .rates { flex: none; width: 100px; height: auto; gap: 4px; font-size: 12.5px; }
+        .chip .rates { flex: none; width: auto; min-width: 74px; height: auto; gap: 6px; font-size: 12.5px; }
         .vid { margin-right: 4px; padding: 0 4px; border-radius: 4px; background: var(--fp-sep); font-size: 10.5px; font-weight: 700; }
 
         .side { position: relative; flex: 0 0 200px; border-radius: 10px; background: var(--fp-panel); box-shadow: inset 0 1px 3px rgba(0,0,0,.15); }
@@ -470,19 +470,26 @@ class EdgeRouterCard extends HTMLElement {
         .spin { animation: spin 1s linear infinite; }
         @keyframes spin { to { transform: rotate(360deg); } }
         @container (max-width: 1150px) {
-          .chassis { flex-direction: column; }
-          .main { flex-direction: column; align-items: stretch; margin: 0; }
-          .ports { justify-content: space-between; }
-          .chips { padding: 8px 0 0; border-left: none; border-top: 1px solid var(--fp-sep); min-width: 0; }
-          .side { flex: 0 0 auto; }
-          .sidein { position: static; padding: 5px 10px 6px; gap: 2px; }
-          .devs { display: grid; grid-template-columns: 1fr 1fr; gap: 0 18px; overflow: visible; }
-          .sidein { flex-direction: row; align-items: center; gap: 16px; }
-          .sidein:has(.unk) { flex-direction: column; align-items: stretch; }
-          .devs { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 3px 16px; }
-          .pinfo { flex: 1; }
+          /* side panel (unknown devices / selected interface) moves under the ports + chips row */
+          .chassis { flex-direction: column; gap: 8px; }
+          .chips { min-width: 0; }
+          /* fixed height: the unknown-devices line and a selected interface take the same space */
+          .side { flex: 0 0 52px; }
+          .sidein { padding: 5px 10px; flex-direction: row; align-items: center; gap: 14px; }
+          .sidein:has(.unk) { align-items: center; }
+          .unk { flex-wrap: nowrap; overflow: hidden; }
+          .pinfo { flex: 1; min-width: 0; gap: 1px; }
+          .ptitle .pname { font-size: 13.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+          .dn { height: 20px; font-size: 12px; }
+          .pmeta { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+          .pinfo .pmeta.one { display: none; }
           .pacts { margin-top: 0; flex: none; }
-          .act { flex: none; width: 124px; }
+          .prow { gap: 5px; }
+          .act { flex: none; width: 110px; height: 26px; }
+        }
+        @container (max-width: 760px) {
+          .main { flex-direction: column; align-items: stretch; }
+          .chips { padding: 8px 0 0; border-left: none; border-top: 1px solid var(--fp-sep); }
         }
       </style>
       <ha-card class="${this._hass.themes?.darkMode ? 'dark' : ''}" style="${this._config.accent ? `--card-accent:${this._config.accent}` : ''}">
