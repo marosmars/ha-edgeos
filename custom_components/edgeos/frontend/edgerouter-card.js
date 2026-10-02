@@ -389,10 +389,11 @@ class EdgeRouterCard extends HTMLElement {
         .chassis-wrap { flex: 1; display: flex; flex-direction: column; container-type: inline-size; margin-top: 10px; overflow-x: auto; border-radius: 12px; background: var(--fp-bg); box-shadow: var(--fp-edge); }
         .chassis { flex: 1; display: flex; align-items: stretch; gap: 14px; padding: 6px 10px; min-height: 112px; box-sizing: border-box; color: var(--fp-text); }
         .main { flex: 1; display: flex; align-items: center; gap: 14px; min-width: 0; }
-        .ports { display: flex; gap: 8px; align-items: flex-end; }
-        .cell { display: flex; flex-direction: column; gap: 2px; width: 104px; padding: 5px 6px; border-radius: 8px; cursor: pointer;
+        /* physical ports 2/3, tunnels + VLANs 1/3 */
+        .ports { flex: 2 1 0; min-width: 0; display: flex; gap: 8px; align-items: flex-end; justify-content: space-around; }
+        .cell { display: flex; flex-direction: column; gap: 2px; flex: 0 1 130px; min-width: 92px; padding: 5px 6px; border-radius: 8px; cursor: pointer;
                 border: 1px solid transparent; box-sizing: border-box; transition: background .15s, border-color .15s; }
-        .cell.sfp { width: 80px; }
+        .cell.sfp { flex: 0 1 90px; min-width: 70px; }
         .cell:hover, .chip:hover { background: var(--fp-hover); }
         .cell.sel, .chip.sel { border-color: var(--primary-color); background: var(--fp-sel); }
         .nm { height: 16px; min-width: 0; }
@@ -415,8 +416,14 @@ class EdgeRouterCard extends HTMLElement {
         .up .l1, .chip.up .led { background: #5f5; box-shadow: 0 0 6px #5f5; }
         .dis .l1, .chip.dis .led { background: #f44; box-shadow: 0 0 6px #f44; }
         .addr { height: 15px; margin-top: 4px; font-size: 11px; color: var(--fp-text); font-variant-numeric: tabular-nums; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .chips { display: grid; grid-template-columns: minmax(0, 1fr) 130px; gap: 0 6px; align-items: start; padding-left: 14px; border-left: 1px solid var(--fp-sep); flex: 1; min-width: 320px; }
+        .chips { container-type: inline-size; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 0 6px; align-items: start; padding-left: 14px; border-left: 1px solid var(--fp-sep); flex: 1 1 0; min-width: 260px; }
         .ccol { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+        .ccol.off .chip { width: 104px; }
+        /* tight column: inactive tunnels collapse to LED + icon (name in the tooltip) */
+        @container (max-width: 330px) {
+          .ccol.off .chip { width: 40px; padding: 0 6px; justify-content: center; }
+          .ccol.off .tn { display: none; }
+        }
         .chip { display: flex; align-items: center; gap: 5px; width: 100%; height: 24px; padding: 0 8px; border-radius: 13px; cursor: pointer;
                 border: 1px solid transparent; box-sizing: border-box; background: rgba(127,127,127,.1); font-size: 12px; white-space: nowrap; }
         .chip.down:not(.sel), .chip.dis:not(.sel) { opacity: .6; }
@@ -499,7 +506,7 @@ class EdgeRouterCard extends HTMLElement {
             <div class="ports">${phys.map((x) => this._port(x)).join('')}</div>
             ${chips.length ? `<div class="chips">
               <div class="ccol">${chips.filter((x) => x.up && x.enabled).map((x) => this._chip(x)).join('')}</div>
-              <div class="ccol">${chips.filter((x) => !(x.up && x.enabled)).map((x) => this._chip(x)).join('')}</div>
+              <div class="ccol off">${chips.filter((x) => !(x.up && x.enabled)).map((x) => this._chip(x)).join('')}</div>
             </div>` : ''}
           </div>
           <div class="side"><div class="sidein">${this._panel(ifaces.find((x) => x.name === this._sel))}</div></div>
