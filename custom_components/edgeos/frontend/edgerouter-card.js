@@ -390,7 +390,7 @@ class EdgeRouterCard extends HTMLElement {
         .chassis { flex: 1; display: flex; align-items: stretch; gap: 14px; padding: 6px 10px; min-height: 112px; box-sizing: border-box; color: var(--fp-text); }
         .main { flex: 1; display: flex; align-items: center; gap: 14px; min-width: 0; }
         /* physical ports 2/3, tunnels + VLANs 1/3 */
-        .ports { flex: 2 1 0; min-width: 0; display: flex; gap: 8px; align-items: flex-end; justify-content: space-around; }
+        .ports { flex: 2 1 0; min-width: 0; display: flex; gap: 8px; align-items: flex-end; justify-content: space-around; overflow-x: auto; }
         .cell { display: flex; flex-direction: column; gap: 2px; flex: 0 1 130px; min-width: 92px; padding: 5px 6px; border-radius: 8px; cursor: pointer;
                 border: 1px solid transparent; box-sizing: border-box; transition: background .15s, border-color .15s; }
         .cell.sfp { flex: 0 1 90px; min-width: 70px; }
@@ -496,10 +496,18 @@ class EdgeRouterCard extends HTMLElement {
         }
         @container (max-width: 760px) {
           .main { flex-direction: column; align-items: stretch; }
+          .ports { flex: none; }
           .chips { padding: 8px 0 0; border-left: none; border-top: 1px solid var(--fp-sep); }
         }
         /* phones: title on its own line, stat tiles below it */
         @media (max-width: 600px) {
+          /* never centre a row that may be wider than the screen: the overflow would go off the left edge */
+          .ports { justify-content: flex-start; gap: 4px; }
+          .cell { flex: 1 1 0; min-width: 0; padding: 4px 3px; }
+          .cell.sfp { flex: 0 0 62px; }
+          .cell .no { width: auto; }
+          .addr { font-size: 10px; }
+          .cell .rates { flex-direction: column; height: auto; gap: 0; font-size: 11.5px; line-height: 14px; }
           .top { flex-wrap: wrap !important; }
           .stats { width: 100%; overflow-x: auto; flex-wrap: nowrap; }
           .stat { flex: 1 0 auto; min-width: 54px; }
